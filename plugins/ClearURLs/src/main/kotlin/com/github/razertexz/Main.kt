@@ -24,7 +24,7 @@ internal class Main : Plugin() {
     )
 
     override fun start(ctx: Context) {
-        val rules = Http.simpleJsonGet("https://rules2.clearurls.xyz/data.minify.json", Array<Provider>::class.java)
+        val rules = Http.simpleJsonGet("https://rules2.clearurls.xyz/data.minify.json", HashMap<String, Provider>::class.java)
 
         patcher.patch(UriHandler::class.java, "handle", arrayOf(Context::class.java, String::class.java, Boolean::class.java, Boolean::class.java, Function0::class.java), object : XC_MethodHook(-10000) {
             override fun beforeHookedMethod(param: XC_MethodHook.MethodHookParam) {
