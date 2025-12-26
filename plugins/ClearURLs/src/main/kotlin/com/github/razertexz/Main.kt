@@ -19,7 +19,7 @@ class Main : Plugin() {
             override fun beforeHookedMethod(param: XC_MethodHook.MethodHookParam) {
                 clearUrl(param.args[1] as String)
             }
-        }
+        })
     }
 
     override fun stop(ctx: Context) = patcher.unpatchAll()
