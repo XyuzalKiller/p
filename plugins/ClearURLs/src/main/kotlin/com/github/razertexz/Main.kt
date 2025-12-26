@@ -26,5 +26,7 @@ class Main : Plugin() {
 
     private fun clearUrl(url: String): String {
         Utils.showToast(url)
+
+        return ""
     }
 }
