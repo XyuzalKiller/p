@@ -29,7 +29,7 @@ internal class Main : Plugin() {
         patcher.patch(UriHandler::class.java, "handle", arrayOf(Context::class.java, String::class.java, Boolean::class.java, Boolean::class.java, Function0::class.java), object : XC_MethodHook(-10000) {
             override fun beforeHookedMethod(param: XC_MethodHook.MethodHookParam) {
                 val originalUrl = param.args[1] as String
-                Utils.showToast(rules["adtech"].url)
+                Utils.showToast(rules["adtech"].urlPattern)
             }
         })
     }
