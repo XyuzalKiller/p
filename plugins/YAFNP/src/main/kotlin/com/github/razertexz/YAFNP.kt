@@ -5,38 +5,29 @@ import android.content.Context
 import com.aliucord.annotations.AliucordPlugin
 import com.aliucord.entities.Plugin
 
-import com.discord.api.presence.Presence
-import com.discord.api.activity.Activity
-import com.discord.api.activity.ActivityType
+import com.discord.stores.StoreStream
+import com.discord.models.presence.Presence
+import com.discord.utilities.icon.IconUtils
 
 import de.robv.android.xposed.XC_MethodHook
 
 @AliucordPlugin(requiresRestart = false)
 internal class YAFNP : Plugin() {
     override fun start(context: Context) {
-        val map = HashMap<Long, String>()
-
-        patcher.patch(Presence::class.java.declaredConstructors[0], object : XC_MethodHook() {
+        patcher.patch(IconUtils::class.java, "getForUser", arrayOf(Long::class.javaObjectType, String::class.java, Int::class.javaObjectType, Boolean::class.java, Int::class.javaObjectType), object : XC_MethodHook() {
             override fun afterHookedMethod(param: XC_MethodHook.MethodHookParam) {
-                val activities = param.args[1] as List<Activity>
-                val userId = param.args[4] as Long? ?: return
+                val presence = getPresence(param.args[0] as Long?) ?: return
+            }
+        })
 
-                for (activity in activities) {
-                    if (activity.p() == ActivityType.CUSTOM_STATUS) {
-                        val state = activity.l()
-                        if (state != null) {
-                            val hiddenText = extractHiddenText(state)
-                            if (hiddenText.isNotEmpty()) {
-                                map[userId] = hiddenText
-                            }
-                        }
-
-                        break
-                    }
-                }
+        patcher.patch(IconUtils::class.java, "getForUserBanner", arrayOf(Long::class.java, String::class.java, Int::class.javaObjectType, Boolean::class.java), object : XC_MethodHook() {
+            override fun afterHookedMethod(param: XC_MethodHook.MethodHookParam) {
+                val presence = getPresence(param.args[0] as Long) ?: return
             }
         })
     }
 
     override fun stop(context: Context) = patcher.unpatchAll()
+
+    private fun getPresence(userId: Long?): Presence? = null if (userId == null) else StoreStream.getPresences().getPresences()[userId]
 }
