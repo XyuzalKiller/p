@@ -18,7 +18,7 @@ internal class YAFNP : Plugin() {
     override fun start(context: Context) {
         patcher.patch(Presence::class.java, arrayOf(ClientStatus::class.java, ClientStatuses::class.java, List::class.java), object : XC_MethodHook() {
             override fun afterHookedMethod(param: XC_MethodHook.MethodHookParam) {
-                val activities = it.args[2] as List<Activity>
+                val activities = param.args[2] as List<Activity>
                 for (activity in activities) {
                     if (activity.p() == ActivityType.CUSTOM_STATUS) {
                         logger.infoToast(activity.toString())
