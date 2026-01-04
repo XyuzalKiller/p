@@ -25,13 +25,13 @@ internal class YAFNP : Plugin() {
         patcher.patch(IconUtils::class.java, "getForUser", arrayOf(Long::class.javaObjectType, String::class.java, Int::class.javaObjectType, Boolean::class.java, Int::class.javaObjectType), object : XC_MethodHook() {
             override fun afterHookedMethod(param: XC_MethodHook.MethodHookParam) {
                 logger.infoToast("userId: ${param.args[0] as Long?}")
-                //val presence = getPresence(param.args[0] as Long) ?: return
+                //val presence = getCustomStatus(param.args[0] as Long) ?: return
             }
         })
 
         patcher.patch(IconUtils::class.java, "getForUserBanner", arrayOf(Long::class.java, String::class.java, Int::class.javaObjectType, Boolean::class.java), object : XC_MethodHook() {
             override fun afterHookedMethod(param: XC_MethodHook.MethodHookParam) {
-                val presence = getPresence(param.args[0] as Long) ?: return
+                val presence = getCustomStatus(param.args[0] as Long) ?: return
             }
         })
     }
@@ -40,12 +40,8 @@ internal class YAFNP : Plugin() {
 
     private fun getCustomStatus(userId: Long): String? {
         val presencesSnapshot = presencesSnapshotField.get(StoreStream.getPresences()) as Map<Long, Presence>
-        val presence = presencesSnapshot[userId] ?: return null
-
-        for (activity in presence.activities) {
-            if (activity.p() == ActivityType.CUSTOM_STATUS) {
-                return activity.l()
-            }
-        }
+        return presencesSnapshot[userId]
+            ?.firstOrNull { it.p == ActivityType.CUSTOM_STATUS }
+            ?.l()
     }
 }
