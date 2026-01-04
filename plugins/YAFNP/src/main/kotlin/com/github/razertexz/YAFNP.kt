@@ -31,7 +31,7 @@ internal class YAFNP : Plugin() {
 
     private fun getPresence(userId: Long?): Presence? {
         if (userId != null) {
-            val presences: Map<Long, Presence> = StoreStream.getPresences().getPresences()
+            val presences: MutableMap<Long, Presence> = StoreStream.getPresences().getPresences()
             return presences[userId]
         }
 
