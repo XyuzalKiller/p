@@ -41,7 +41,7 @@ internal class YAFNP : Plugin() {
     private fun getCustomStatus(userId: Long): String? {
         val presencesSnapshot = presencesSnapshotField.get(StoreStream.getPresences()) as Map<Long, Presence>
         return presencesSnapshot[userId]
-            ?.activities.firstOrNull { it.p == ActivityType.CUSTOM_STATUS }
+            ?.activities.firstOrNull { it.p() == ActivityType.CUSTOM_STATUS }
             ?.l()
     }
 }
