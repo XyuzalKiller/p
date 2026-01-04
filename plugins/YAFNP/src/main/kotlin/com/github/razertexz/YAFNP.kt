@@ -24,6 +24,7 @@ internal class YAFNP : Plugin() {
     override fun start(context: Context) {
         patcher.patch(IconUtils::class.java, "getForUser", arrayOf(Long::class.javaObjectType, String::class.java, Int::class.javaObjectType, Boolean::class.java, Int::class.javaObjectType), object : XC_MethodHook() {
             override fun afterHookedMethod(param: XC_MethodHook.MethodHookParam) {
+                logger.infoToast("test")
                 logger.infoToast("userId: ${param.args[0] as Long?}")
                 //val presence = getCustomStatus(param.args[0] as Long) ?: return
             }
@@ -31,7 +32,7 @@ internal class YAFNP : Plugin() {
 
         patcher.patch(IconUtils::class.java, "getForUserBanner", arrayOf(Long::class.java, String::class.java, Int::class.javaObjectType, Boolean::class.java), object : XC_MethodHook() {
             override fun afterHookedMethod(param: XC_MethodHook.MethodHookParam) {
-                val presence = getCustomStatus(param.args[0] as Long) ?: return
+                //val presence = getCustomStatus(param.args[0] as Long) ?: return
             }
         })
     }
