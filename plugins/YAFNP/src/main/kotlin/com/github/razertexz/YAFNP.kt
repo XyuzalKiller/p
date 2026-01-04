@@ -36,7 +36,7 @@ internal class YAFNP : Plugin() {
 
     override fun stop(context: Context) = patcher.unpatchAll()
 
-    private fun getPresence(userId: Long?): Presence? = if (user != null) 
+    private fun getPresence(userId: Long?): Presence? {
         if (userId != null) {
             val presencesSnapshot = presencesSnapshotField[StoreStream.getPresences()] as Map<Long, Presence>
             return presencesSnapshot[userId]
