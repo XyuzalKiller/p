@@ -8,6 +8,7 @@ import com.aliucord.entities.Plugin
 import com.discord.stores.StoreStream
 import com.discord.models.presence.Presence
 import com.discord.utilities.icon.IconUtils
+import com.discord.utilities.collections.SnowflakePartitionMap
 
 import de.robv.android.xposed.XC_MethodHook
 
@@ -29,5 +30,12 @@ internal class YAFNP : Plugin() {
 
     override fun stop(context: Context) = patcher.unpatchAll()
 
-    private fun getPresence(userId: Long?): Presence? = if (userId != null) StoreStream.getPresences().presences[userId] else null
+    private fun getPresence(userId: Long?): Presence? {
+        if (userId != null) {
+            val presences: SnowflakePartitionMap.CopiablePartitionMap<Presence> = StoreStream.getPresences().presences
+            return presences[userId]
+        }
+
+        return null
+    }
 }
