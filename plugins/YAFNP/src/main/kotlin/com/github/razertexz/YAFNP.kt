@@ -32,7 +32,7 @@ internal class YAFNP : Plugin() {
 
     private fun getPresence(userId: Long?): Presence? {
         if (userId != null) {
-            return (StoreStream.getPresences().getPresences() as SnowflakePartitionMap.CopiablePartitionMap<Presence>)[userId]
+            return (StoreStream.getPresences().presences as SnowflakePartitionMap.CopiablePartitionMap<Presence>)[userId]
         }
 
         return null
