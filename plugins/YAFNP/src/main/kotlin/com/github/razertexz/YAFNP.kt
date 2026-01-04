@@ -6,14 +6,20 @@ import com.aliucord.annotations.AliucordPlugin
 import com.aliucord.entities.Plugin
 
 import com.discord.stores.StoreStream
+import com.discord.stores.StoreUserPresence
 import com.discord.models.presence.Presence
 import com.discord.utilities.icon.IconUtils
-import com.discord.utilities.collections.SnowflakePartitionMap
 
 import de.robv.android.xposed.XC_MethodHook
 
 @AliucordPlugin(requiresRestart = false)
 internal class YAFNP : Plugin() {
+    private val presencesSnapshotField by lazy {
+        StoreUserPresence::class.java.getDeclaredField("presencesSnapshot").apply {
+            isAccessible = true
+        }
+    }
+
     override fun start(context: Context) {
         patcher.patch(IconUtils::class.java, "getForUser", arrayOf(Long::class.javaObjectType, String::class.java, Int::class.javaObjectType, Boolean::class.java, Int::class.javaObjectType), object : XC_MethodHook() {
             override fun afterHookedMethod(param: XC_MethodHook.MethodHookParam) {
@@ -30,9 +36,10 @@ internal class YAFNP : Plugin() {
 
     override fun stop(context: Context) = patcher.unpatchAll()
 
-    private fun getPresence(userId: Long?): Presence? {
+    private fun getPresence(userId: Long?): Presence? = if (user != null) 
         if (userId != null) {
-            return (StoreStream.getPresences().presences as SnowflakePartitionMap.CopiablePartitionMap<Presence>)[userId]
+            val presencesSnapshot = presencesSnapshotField[StoreStream.getPresences()] as Map<Long, Presence>
+            return presencesSnapshot[userId]
         }
 
         return null
