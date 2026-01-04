@@ -29,12 +29,5 @@ internal class YAFNP : Plugin() {
 
     override fun stop(context: Context) = patcher.unpatchAll()
 
-    private fun getPresence(userId: Long?): Presence? {
-        if (userId != null) {
-            val presences: MutableMap<Long, Presence> = StoreStream.getPresences().getPresences()
-            return presences[userId]
-        }
-
-        return null
-    }
+    private fun getPresence(userId: Long?): Presence? = if (userId != null) (StoreStream.getPresences().getPresences() as Map<Long, Presence>)[userId] else null
 }
