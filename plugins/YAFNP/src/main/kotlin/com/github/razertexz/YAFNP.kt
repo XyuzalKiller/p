@@ -40,15 +40,6 @@ internal class YAFNP : Plugin() {
 
     private fun getCustomStatus(userId: Long): String? {
         val presencesSnapshot = presencesSnapshotField.get(StoreStream.getPresences()) as Map<Long, Presence>
-        // val presence = presencesSnapshot[userId]
-        // if (presence != null) {
-            // for (activity in presence.activities) {
-                // if (activity.p() == ActivityType.CUSTOM_STATUS) {
-                    // return activity.l()
-                // }
-            // }
-        // }
-
         val presence = presencesSnapshot[userId] ?: return null
         for (activity in presence.activities) {
             if (activity.p() == ActivityType.CUSTOM_STATUS) {
